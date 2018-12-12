@@ -30,3 +30,15 @@
 *.exe
 *.out
 *.app
+
+#Folders
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Dd]debug/
+Template/[Dd]ebug
+Template/Template/[Dd]ebug
+Template/Template/[Bb]uild
+Template/Template/[Oo]ut
