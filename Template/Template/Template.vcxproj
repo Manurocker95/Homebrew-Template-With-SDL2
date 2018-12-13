@@ -68,7 +68,7 @@
     <NMakeCleanCommandLine>make clean</NMakeCleanCommandLine>
     <NMakeReBuildCommandLine>make clean all</NMakeReBuildCommandLine>
     <NMakePreprocessorDefinitions>WIN32;_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
-    <NMakeIncludeSearchPath>$(ProjectDir)\include;C:\devkitPro\libnx\include;C:\devkitPro\devkitA64\include;C:\devkitPro\portlibs\switch\include;C:\devkitPro\portlibs\armv6k\include;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
+    <NMakeIncludeSearchPath>$(ProjectDir)\include;D:\devkitPro\libnx\include;D:\devkitPro\devkitA64\include;D:\devkitPro\portlibs\switch\include;D:\devkitPro\portlibs\armv6k\include;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <NMakeBuildCommandLine>make</NMakeBuildCommandLine>
@@ -101,14 +101,25 @@
     <None Include="Makefile" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\GameScreen.cpp" />
     <ClCompile Include="source\main.cpp" />
+    <ClCompile Include="source\SceneManager.cpp" />
     <ClCompile Include="source\SDL_FontCache.c" />
     <ClCompile Include="source\SDL_Helper.cpp" />
+    <ClCompile Include="source\SplashScreen.cpp" />
+    <ClCompile Include="source\TitleScreen.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\Colors.h" />
+    <ClInclude Include="source\Filepaths.h" />
+    <ClInclude Include="source\GameScreen.hpp" />
+    <ClInclude Include="source\Scene.hpp" />
+    <ClInclude Include="source\SceneManager.hpp" />
     <ClInclude Include="source\SDL_FontCache.h" />
     <ClInclude Include="source\SDL_Helper.hpp" />
+    <ClInclude Include="source\Settings.h" />
+    <ClInclude Include="source\SplashScreen.hpp" />
+    <ClInclude Include="source\TitleScreen.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

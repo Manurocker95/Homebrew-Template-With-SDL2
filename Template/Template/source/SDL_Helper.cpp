@@ -170,3 +170,31 @@ void SDL_Helper::SDL_Renderdisplay(void)
 {
 	SDL_RenderPresent(this->m_renderer);
 }
+
+void SDL_Helper::SDL_DrawImageOpacity(SDL_Texture *texture, int x, int y, int opacity)
+{
+	SDL_SetTextureAlphaMod(texture, opacity);
+	SDL_Rect position;
+	position.x = x; position.y = y;
+	SDL_QueryTexture(texture, NULL, NULL, &position.w, &position.h);
+	SDL_RenderCopy(this->m_renderer, texture, NULL, &position);
+}
+
+void SDL_Helper::SDL_DrawImageScaleOpacity(SDL_Texture *texture, int x, int y, int w, int h, int opacity)
+{
+	SDL_SetTextureAlphaMod(texture, opacity);
+	SDL_Rect position;
+	position.x = x; position.y = y; position.w = w; position.h = h;
+	SDL_RenderCopy(this->m_renderer, texture, NULL, &position);
+}
+
+void SDL_Helper::SDL_DestroyTexture(SDL_Texture * texture)
+{
+	SDL_DestroyTexture(texture);
+}
+
+void SDL_Helper::SDL_DrawBG(SDL_Color clearColor, SDL_Color colour)
+{
+	SDL_ClearScreen(clearColor);
+	SDL_DrawRect(0, 0, 1280, 720, colour);
+}
