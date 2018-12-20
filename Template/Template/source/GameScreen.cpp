@@ -1,47 +1,150 @@
+/* This file is part of Manurocker95's Template!
+
+this is made for my tutorial: https://gbatemp.net/threads/tutorial-setting-up-visual-studio-2017-environment-for-nintendo-switch-homebrew-development.525977/#post-8439059
+
+Copyright (C) 2018/2019 Manuel Rodríguez Matesanz
+>    This program is free software: you can redistribute it and/or modify
+>    it under the terms of the GNU General Public License as published by
+>    the Free Software Foundation, either version 3 of the License, or
+>    (at your option) any later version.
+>
+>    This program is distributed in the hope that it will be useful,
+>    but WITHOUT ANY WARRANTY; without even the implied warranty of
+>    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+>    GNU General Public License for more details.
+>
+>    You should have received a copy of the GNU General Public License
+>    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+>    See LICENSE for information.
+*/
+
 #include "GameScreen.hpp"
 #include "SceneManager.hpp"
-#include "Colors.h"
 #include "Filepaths.h"
 #include "Settings.h"
+#include "Colors.h"
 
 GameScreen::GameScreen() : Scene()
 {
-
+	this->m_changeScene = false;
+	this->m_dragging = false;
 }
 
 GameScreen::~GameScreen()
 {
+	this->m_music->End(this->m_helper);
+	delete(this->m_music);
 
+	this->m_buttonTapSFX->End(this->m_helper);
+	delete(this->m_buttonTapSFX);
+
+	this->m_circle->End(this->m_helper);
+	delete(this->m_circle);
+
+	this->m_helper->SDL_DestroyTexture(m_background);
+
+	this->m_text->End(this->m_helper);
+	delete(this->m_text);
 }
 
 void GameScreen::Start(SDL_Helper * helper)
 {
-	m_changeScene = false;
-	m_helper = helper;
-	m_helper->SDL_LoadImage(&m_background, IMG_BG_GAME);
+
+	this->m_helper = helper;
+	this->m_helper->SDL_LoadImage(&this->m_background, IMG_BACKGROUND);
+
+	this->m_text = new Text(helper, "Game screen!", 525, 670, 15, true, FONT_NORMAL, BLACK);
+
+	this->m_circle = new Circle(Circle::CIRCLE_TYPE::BLUE, 200, 200, this->m_helper, IMG_BLUE_CIRCLE, 94, 94);
+	
+	this->m_buttonTapSFX = new SfxSound(this->m_helper, SND_SFX_TAP, false, 2);
+	this->m_music = new MusicSound(this->m_helper, SND_BGM_TITLE, true, 1);
+	this->m_music->Play(this->m_helper);
+
 }
 
 void GameScreen::Draw()
 {
-	m_helper->SDL_DrawImage(m_background, 0, 0);
+	this->m_helper->SDL_DrawImage(this->m_background, 0, 0);
 
+
+	this->m_circle->Draw(this->m_helper);
+
+	this->m_text->Draw(this->m_helper);
 }
 
 void GameScreen::Update()
 {
-	if (m_changeScene)
+	this->m_circle->Update();
+
+	if (this->m_changeScene)
 		NextScene();
 }
 
-void GameScreen::CheckInputs(u64 kDown)
+void GameScreen::CheckInputs(u64 kDown, u64 kHeld, u64 kUp)
 {
-	if (kDown & KEY_B)
+	if (kHeld & KEY_TOUCH)
+	{
+		u32 i;
+		hidTouchRead(&this->touch, i);
+
+		if (this->m_dragging)
+		{
+			this->m_circle->UpdateDrag(&this->touch);
+		}
+		else
+		{
+			if (this->m_circle->Touched(&this->touch))
+			{
+				this->m_buttonTapSFX->Play(this->m_helper);
+				this->m_dragging = true;
+				this->m_circle->OnDrag(&this->touch);
+			}
+		}
+	}
+	else if (kUp & KEY_TOUCH)
+	{
+		u32 i;
+		hidTouchRead(&this->touch, i);
+
+		if (this->m_dragging)
+		{
+			this->m_circle->OnDrop();
+		}
+
+		this->m_dragging = false;
+	}
+
+	if (!this->m_dragging)
+	{
+		if (kHeld & KEY_RIGHT)
+			this->m_circle->MoveX(CIRCLE_DISPLACEMENT);
+
+		if (kHeld & KEY_LEFT)
+			this->m_circle->MoveX(-CIRCLE_DISPLACEMENT);
+
+		if (kHeld & KEY_UP)
+			this->m_circle->MoveY(-CIRCLE_DISPLACEMENT);
+
+		if (kHeld & KEY_DOWN)
+			this->m_circle->MoveY(CIRCLE_DISPLACEMENT);
+
+		if (kDown & KEY_R)
+			this->m_circle->SetFalling(true);
+
+		if (kDown & KEY_L)
+			this->m_circle->SetFalling(false);
+	}
+
+	if (kDown & KEY_PLUS)
+	{
 		m_changeScene = true;
+	}
 }
 
 // * We go to the next scene = GameScreen
 void GameScreen::NextScene()
 {
-	SceneManager::Instance()->setActualScene(SceneManager::TITLE);
-	delete(this);
+	SceneManager::Instance()->LoadScene(SceneManager::TITLE);
 }
+

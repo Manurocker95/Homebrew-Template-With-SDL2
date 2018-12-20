@@ -1,41 +1,71 @@
+/* This file is part of Manurocker95's Template!
+
+this is made for my tutorial: https://gbatemp.net/threads/tutorial-setting-up-visual-studio-2017-environment-for-nintendo-switch-homebrew-development.525977/#post-8439059
+
+Copyright (C) 2018/2019 Manuel Rodríguez Matesanz
+>    This program is free software: you can redistribute it and/or modify
+>    it under the terms of the GNU General Public License as published by
+>    the Free Software Foundation, either version 3 of the License, or
+>    (at your option) any later version.
+>
+>    This program is distributed in the hope that it will be useful,
+>    but WITHOUT ANY WARRANTY; without even the implied warranty of
+>    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+>    GNU General Public License for more details.
+>
+>    You should have received a copy of the GNU General Public License
+>    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+>    See LICENSE for information.
+*/
+
 #pragma once
 #ifndef _SCENE_MANAGER_H_
 #define _SCENE_MANAGER_H_
 
+#include <string>
 #include <fstream>
 #include <sstream>
+#include "Scene.hpp"
 
-#include "SplashScreen.hpp"
-#include "TitleScreen.hpp"
-#include "GameScreen.hpp"
 
 class SceneManager
 {
 public:
 
-	enum SCENES { SPLASH, TITLE, GAME };	// Scenes: Splashcreen, TitleScreen, Gamescreen
+	enum SCENES 
+	{ 
+		SPLASH, 
+		TITLE,
+		GAME, 
+		LOADING
+	};
 
+private:					
+	static SceneManager * instance;			// Singleton Instance
+	Scene * m_actualScene;					// Scene running
+	SDL_Helper * m_helper;					// SDL Helper instance
+
+	int m_timesRunThisHB;					// How many times did we run this homebrew
+	bool m_out;								// if we ended or not the program
+
+public:
 	static SceneManager * Instance();		// Property to get the singleton instance
-
-	void setActualScene(SCENES _scene);		// Method to set a new scene (E.G: SplashScreen -> GameScreen)
+	void LoadScene(SCENES _scene);
+	void SetActualScene(SCENES _scene);		// Method to set a new scene (E.G: SplashScreen -> GameScreen)
 	void Start(SDL_Helper * helper);		// Method for initialization
 	void Update();							// Method called every frame. It calls to scene Draw, Update and CheckInput functions
 	void Draw();							// Method called every frame. It calls to scene Draw, Update and CheckInput functions
-	void CheckInputs();							// Method called every frame. It calls to scene Draw, Update and CheckInput functions
+	void CheckInputs();						// Method called every frame. It calls to scene Draw, Update and CheckInput functions
 	bool IsOut();							// Method that returns if we are exiting the game from scene (normal exiting)
 	void ExitGame();						// Method to exit the game (Out = true)
 	void ReadData();						// Method for reading data from our save
-	void SaveDataAndExit();					// Method that saves our data to the .sav and exits
+	void SaveData();
 	void Exit();
+	
+	SDL_Helper * GetHelper();
+
 private:
-
 	SceneManager() {};						// Private so that it can  not be called
-	static SceneManager * instance;			// Singleton Instance
-
-	int m_times_we_have_run_the_program;	// Variable saved in our .sav
-	bool m_out;								// if we ended or not the program
-	Scene * m_actualScene;					// Scene running
-	SDL_Helper * m_helper;
 };
 
 #endif

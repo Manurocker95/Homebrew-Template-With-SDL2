@@ -101,24 +101,40 @@
     <None Include="Makefile" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\Button.cpp" />
+    <ClCompile Include="source\Circle.cpp" />
     <ClCompile Include="source\GameScreen.cpp" />
+    <ClCompile Include="source\LoadingScreen.cpp" />
     <ClCompile Include="source\main.cpp" />
+    <ClCompile Include="source\MusicSound.cpp" />
     <ClCompile Include="source\SceneManager.cpp" />
     <ClCompile Include="source\SDL_FontCache.c" />
     <ClCompile Include="source\SDL_Helper.cpp" />
+    <ClCompile Include="source\SfxSound.cpp" />
+    <ClCompile Include="source\Sound.cpp" />
     <ClCompile Include="source\SplashScreen.cpp" />
+    <ClCompile Include="source\Sprite.cpp" />
+    <ClCompile Include="source\Text.cpp" />
     <ClCompile Include="source\TitleScreen.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\Button.hpp" />
+    <ClInclude Include="source\Circle.hpp" />
     <ClInclude Include="source\Colors.h" />
     <ClInclude Include="source\Filepaths.h" />
     <ClInclude Include="source\GameScreen.hpp" />
+    <ClInclude Include="source\LoadingScreen.hpp" />
+    <ClInclude Include="source\MusicSound.hpp" />
     <ClInclude Include="source\Scene.hpp" />
     <ClInclude Include="source\SceneManager.hpp" />
     <ClInclude Include="source\SDL_FontCache.h" />
     <ClInclude Include="source\SDL_Helper.hpp" />
     <ClInclude Include="source\Settings.h" />
+    <ClInclude Include="source\SfxSound.hpp" />
+    <ClInclude Include="source\Sound.hpp" />
     <ClInclude Include="source\SplashScreen.hpp" />
+    <ClInclude Include="source\Sprite.hpp" />
+    <ClInclude Include="source\Text.hpp" />
     <ClInclude Include="source\TitleScreen.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

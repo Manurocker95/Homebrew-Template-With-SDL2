@@ -1,5 +1,34 @@
+/* This file is part of Manurocker95's Template!
+
+this is made for my tutorial: https://gbatemp.net/threads/tutorial-setting-up-visual-studio-2017-environment-for-nintendo-switch-homebrew-development.525977/#post-8439059
+
+Copyright (C) 2018/2019 Manuel Rodríguez Matesanz
+>    This program is free software: you can redistribute it and/or modify
+>    it under the terms of the GNU General Public License as published by
+>    the Free Software Foundation, either version 3 of the License, or
+>    (at your option) any later version.
+>
+>    This program is distributed in the hope that it will be useful,
+>    but WITHOUT ANY WARRANTY; without even the implied warranty of
+>    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+>    GNU General Public License for more details.
+>
+>    You should have received a copy of the GNU General Public License
+>    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+>    See LICENSE for information.
+*/
+
 #include "SceneManager.hpp"
+#include "SplashScreen.hpp"
+#include "TitleScreen.hpp"
+#include "GameScreen.hpp"
+#include "LoadingScreen.hpp"
+
 #include "Colors.h"
+#include "Filepaths.h"
+
+#include <fstream>
+#include <sstream>
 
 SceneManager * SceneManager::instance = NULL;
 
@@ -16,21 +45,34 @@ void SceneManager::Start(SDL_Helper * helper)
 {
 	this->m_helper = helper;
 	this->m_out = false;
+	this->m_timesRunThisHB = 0;
 	ReadData();
 }
 
 // We read the data from our .sav
 void SceneManager::ReadData()
 {
-	this->m_times_we_have_run_the_program = 1;
-	setActualScene(SCENES::SPLASH);
+	std::ifstream myReadFile(DATA_FILE);
+
+	if (myReadFile)
+	{
+		myReadFile >> m_timesRunThisHB;
+		m_actualScene = new SplashScreen();
+	}
+	else
+	{
+		SaveData();
+	}
+
+	this->m_actualScene = new SplashScreen();
+	this->m_actualScene->Start(m_helper);
 }
 
 // We set the new scene
-void SceneManager::setActualScene(SCENES _scene)
+void SceneManager::SetActualScene(SCENES _scene)
 {
 	// We delete the pointer of the actual scene
-	//delete (m_actualScene);
+	delete (this->m_actualScene);
 
 	// We set the new scene
 	switch (_scene)
@@ -46,6 +88,16 @@ void SceneManager::setActualScene(SCENES _scene)
 		break;
 	}
 
+	this->m_actualScene->Start(m_helper);
+}
+
+void SceneManager::LoadScene(SCENES _scene)
+{
+	// We delete the pointer of the actual scene
+	if (this->m_actualScene != NULL)
+		delete (this->m_actualScene);
+
+	this->m_actualScene = new LoadingScreen(_scene);
 	this->m_actualScene->Start(m_helper);
 }
 
@@ -66,6 +118,7 @@ bool SceneManager::IsOut()
 // Simple exiting
 void SceneManager::ExitGame()
 {
+	SaveData();
 	this->m_out = true;
 }
 
@@ -81,22 +134,12 @@ void SceneManager::CheckInputs()
 	// hidKeysDown returns information about which buttons have been
 	// just pressed in this frame compared to the previous one
 	u64 kDown = hidKeysDown(CONTROLLER_P1_AUTO);
+	// hidKeysHeld returns information about which buttons are being held
+	u64 kHeld = hidKeysHeld(CONTROLLER_P1_AUTO);
 
-	if (kDown & KEY_PLUS)
-	{
-		this->m_out = true;
-		return;
-	}
+	u64 kUp = hidKeysUp(CONTROLLER_P1_AUTO);
 
-	this->m_actualScene->CheckInputs(kDown);
-}
-
-// We save and exit the program
-void SceneManager::SaveDataAndExit()
-{
-	this->m_times_we_have_run_the_program++;
-
-	this->m_out = true;
+	this->m_actualScene->CheckInputs(kDown, kHeld, kUp);
 }
 
 void SceneManager::Exit()
@@ -104,3 +147,14 @@ void SceneManager::Exit()
 	delete(this);
 }
 
+SDL_Helper * SceneManager::GetHelper()
+{
+	return this->m_helper;
+}
+
+void SceneManager::SaveData()
+{
+	std::ofstream outfile(DATA_FILE);
+	outfile << m_timesRunThisHB;
+	outfile.close();
+}

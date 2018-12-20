@@ -105,6 +105,8 @@ FC_GlyphData FC_MakeGlyphData(int cache_level, Sint16 x, Sint16 y, Uint16 w, Uin
 
 FC_Font* FC_CreateFont(void);
 
+Uint8 FC_LoadFont (FC_Font * font, SDL_Renderer* renderer, const char* filename_ttf, SDL_RWops* file_rwops_ext, Uint8 own_rwops, Uint32 pointSize, SDL_Color color, int style);
+
 Uint8 FC_LoadFontFromTTF(FC_Font* font, SDL_Renderer* renderer, TTF_Font* ttf, TTF_Font* ext, SDL_Color color);
 
 Uint8 FC_LoadFont_RW(FC_Font* font, SDL_Renderer* renderer, SDL_RWops* file_rwops_ttf, SDL_RWops* file_rwops_ext, Uint8 own_rwops, Uint32 pointSize, SDL_Color color, int style);

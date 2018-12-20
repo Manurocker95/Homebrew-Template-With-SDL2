@@ -903,6 +903,25 @@ static void FC_LoadGlyphsFromTTF(FC_Font* font, TTF_Font* ttf, SDL_Surface** sur
     }
 }
 
+Uint8 FC_LoadFont(FC_Font * font, SDL_Renderer* renderer, const char* filename_ttf, SDL_RWops* file_rwops_ext, Uint8 own_rwops, Uint32 pointSize, SDL_Color color, int style)
+{
+	FC_ClearFont(font);
+	SDL_RWops* rwops;
+
+	if (font == NULL)
+		return 0;
+
+	rwops = SDL_RWFromFile(filename_ttf, "rb");
+
+	if (rwops == NULL)
+	{
+		FC_Log("Unable to open file for reading: %s \n", SDL_GetError());
+		return 0;
+	}
+
+	return FC_LoadFont_RW(font, renderer, rwops, file_rwops_ext, own_rwops, pointSize, color, TTF_STYLE_NORMAL);
+}
+
 Uint8 FC_LoadFontFromTTF(FC_Font* font, SDL_Renderer* renderer, TTF_Font* ttf, TTF_Font* ext, SDL_Color color)
 {
     if(font == NULL || ttf == NULL || ext == NULL)
@@ -983,7 +1002,7 @@ Uint8 FC_LoadFontFromTTF(FC_Font* font, SDL_Renderer* renderer, TTF_Font* ttf, T
     return 1;
 }
 
-Uint8 FC_LoadFont_RW(FC_Font* font, FC_Target* renderer, SDL_RWops* file_rwops_ttf, SDL_RWops* file_rwops_ext, Uint8 own_rwops, Uint32 pointSize, SDL_Color color, int style)
+Uint8 FC_LoadFont_RW(FC_Font* font, SDL_Renderer * renderer, SDL_RWops* file_rwops_ttf, SDL_RWops* file_rwops_ext, Uint8 own_rwops, Uint32 pointSize, SDL_Color color, int style)
 {
     Uint8 result;
     TTF_Font* ttf;
