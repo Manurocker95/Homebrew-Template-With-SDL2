@@ -19,7 +19,7 @@ Copyright (C) 2018/2019 Manuel Rodríguez Matesanz
 */
 #include "Button.hpp"
 
-Button::Button(int _x, int _y, SDL_Helper * _helper, char * _sprite, char * _notInteractableTexture, char * _pressedTexture, bool _interactable, bool _animated, int _numFrames, int _sizePerFrameX, int _sizePerFrameY, int _multipleFrames, int _currentFrameX, int _currentFrameY) : Sprite (_x, _y, _helper, _sprite, _numFrames, _sizePerFrameX, _sizePerFrameY, _currentFrameX, _currentFrameY, _multipleFrames, _animated)
+Button::Button(int _x, int _y, SDL_Helper * _helper, char * _sprite, char * _notInteractableTexture, char * _pressedTexture, bool _interactable, bool _animated, int _numFramesX, int _numFramesY, int _sizePerFrameX, int _sizePerFrameY, int _multipleFrames, int _currentFrameX, int _currentFrameY) : Sprite (_x, _y, _helper, _sprite, _numFramesX, _numFramesY, _sizePerFrameX, _sizePerFrameY, _currentFrameX, _currentFrameY, _multipleFrames, _animated, 1)
 {
 	_helper->SDL_LoadImage(&this->m_notInteractableSprite,_notInteractableTexture);
 	_helper->SDL_LoadImage(&this->m_pressedSprite, _pressedTexture);

@@ -1,6 +1,4 @@
-/* This file is part of Manurocker95's Template!
-
-this is made for my tutorial: https://gbatemp.net/threads/tutorial-setting-up-visual-studio-2017-environment-for-nintendo-switch-homebrew-development.525977/#post-8439059
+/* This file is part of T-Rekt NX!
 
 Copyright (C) 2018/2019 Manuel Rodríguez Matesanz
 >    This program is free software: you can redistribute it and/or modify
@@ -19,6 +17,7 @@ Copyright (C) 2018/2019 Manuel Rodríguez Matesanz
 */
 
 #include "Text.hpp"
+#include "Settings.hpp"
 
 Text::Text(SDL_Helper * _helper, std::string _text, int _x, int _y, int _size, bool _customFont, char * _font, SDL_Color _color)
 {
@@ -32,22 +31,9 @@ Text::Text(SDL_Helper * _helper, std::string _text, int _x, int _y, int _size, b
 	SetCustomFont(_customFont, _font, _helper);
 }
 
-Text::Text(SDL_Helper * _helper, char * _text, int _x, int _y, int _size, bool _customFont, char * _font, SDL_Color _color)
-{
-	this->m_active = true;
-	this->m_text = _text;
-	this->m_x = _x;
-	this->m_y = _y;
-	this->m_size = _size;
-	this->m_textColor = _color;
-	this->m_customFont = _customFont;
-	SetCustomFont(_customFont, _font, _helper);
-}
-
-
 Text::~Text()
 {
-	
+
 }
 
 void Text::LoadFont(SDL_Helper * _helper, char * _font)
@@ -112,4 +98,47 @@ void Text::SetActive(bool _value)
 void Text::SetColor(SDL_Color _color)
 {
 	this->m_textColor = _color;
+}
+
+
+void Text::MoveToCoord(int _x, int _y)
+{
+	this->m_x = _x;
+	this->m_y = _y;
+}
+
+void Text::MoveX(int _value)
+{
+	if (!this->m_active)
+		return;
+
+	this->m_x += _value;
+}
+
+void Text::MoveY(int _value)
+{
+	if (!this->m_active)
+		return;
+
+	this->m_y += _value;
+}
+
+void Text::SetX(int _value)
+{
+	this->m_x = _value;
+}
+
+int Text::GetX()
+{
+	return this->m_x;
+}
+
+void Text::SetY(int _value)
+{
+	this->m_y = _value;
+}
+
+int Text::GetY()
+{
+	return this->m_y;
 }

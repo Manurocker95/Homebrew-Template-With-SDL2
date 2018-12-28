@@ -26,11 +26,12 @@ Copyright (C) 2018/2019 Manuel Rodríguez Matesanz
 #include "MusicSound.hpp"
 #include "Circle.hpp"
 #include "Text.hpp"
+#include "Settings.hpp"
 
 class GameScreen : public Scene
 {
 private:
-	SDL_Texture * m_background;
+	Sprite * m_background;
 
 	// the player ;)
 	Circle * m_circle;
@@ -44,10 +45,10 @@ private:
 
 private:
 	bool m_dragging;
-
+	int m_circleDisplacement;
 public:
 
-	GameScreen();														// Constructor
+	GameScreen(Settings * _settings);									// Constructor
 	~GameScreen();														// Destructor
 	void Start(SDL_Helper * helper) override;							// initialize
 	void Draw() override;												// Draw

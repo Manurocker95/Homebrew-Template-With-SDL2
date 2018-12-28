@@ -1,6 +1,4 @@
-/* This file is part of Manurocker95's Template!
-
-this is made for my tutorial: https://gbatemp.net/threads/tutorial-setting-up-visual-studio-2017-environment-for-nintendo-switch-homebrew-development.525977/#post-8439059
+/* This file is part of T-Rekt NX!
 
 Copyright (C) 2018/2019 Manuel Rodríguez Matesanz
 >    This program is free software: you can redistribute it and/or modify
@@ -19,19 +17,16 @@ Copyright (C) 2018/2019 Manuel Rodríguez Matesanz
 */
 
 #include "LoadingScreen.hpp"
-
 #include "Filepaths.h"
-#include "Settings.h"
 #include "Colors.h"
 
-LoadingScreen::LoadingScreen(SceneManager::SCENES  _nextScene) : Scene()
+LoadingScreen::LoadingScreen(SceneManager::SCENES  _nextScene, Settings * settings, int _delayTime) : Scene(settings)
 {
 	this->m_nextScene = _nextScene;
 	this->m_loading = true;
 	this->m_lastTime = 0;
 	this->m_currentTime = 0;
 	this->m_delay = 0;
-	this->m_changeScene = false;
 }
 
 LoadingScreen::~LoadingScreen()
@@ -43,7 +38,7 @@ LoadingScreen::~LoadingScreen()
 void LoadingScreen::Start(SDL_Helper * helper)
 {
 	this->m_helper = helper;
-	this->m_loadingText = new Text(helper, "Loading...", 1100, 670, 15, false, "", BLACK);	// We wanna use roboto instead of custom font here
+	this->m_loadingText = new Text(helper, SceneManager::Instance()->GetText("loadingText"), 1000, 650, 15, false, "", C_WHITE);	// We wanna use roboto instead of custom font here
 	this->m_helper->SDL_LoadImage(&this->m_loadingBG, IMG_BG_LOADING);
 	this->m_helper->SDL_PauseMusic();
 }
@@ -60,10 +55,10 @@ void LoadingScreen::Update()
 	{
 		this->m_currentTime = SDL_GetTicks();
 
-		if (this->m_currentTime > m_lastTime + 1000)
+		if (this->m_currentTime > this->m_lastTime + 1000)
 		{
 			++this->m_delay;
-			if (this->m_delay >= LOADING_DELAY)
+			if (this->m_delay >= this->m_settings->m_loadingDelay)
 			{
 				this->m_loading = false;
 				this->m_changeScene = true;

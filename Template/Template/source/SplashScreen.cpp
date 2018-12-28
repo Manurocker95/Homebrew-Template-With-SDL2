@@ -1,6 +1,4 @@
-/* This file is part of Manurocker95's Template!
-
-this is made for my tutorial: https://gbatemp.net/threads/tutorial-setting-up-visual-studio-2017-environment-for-nintendo-switch-homebrew-development.525977/#post-8439059
+/* This file is part of T-Rekt NX!
 
 Copyright (C) 2018/2019 Manuel Rodríguez Matesanz
 >    This program is free software: you can redistribute it and/or modify
@@ -18,43 +16,43 @@ Copyright (C) 2018/2019 Manuel Rodríguez Matesanz
 >    See LICENSE for information.
 */
 
+
 #include "SplashScreen.hpp"
 #include "SceneManager.hpp"
 #include "Colors.h"
 #include "Filepaths.h"
 
 // * Constructor 
-SplashScreen::SplashScreen() : Scene()
+SplashScreen::SplashScreen(Settings * settings) : Scene(settings)
 {
 	this->m_splashOpeningState = OPENING;
 	this->m_scTimer = 0;
 	this->m_splashOpacity = 0;
 	this->m_sfxSplash = false;
-	this->m_changeScene = false;
 }
 
 // * Destructor
 SplashScreen::~SplashScreen()
 {
-	this->m_helper->SDL_DestroyTexture(this->m_splash);
+	this->m_splash->End(this->m_helper);
+	delete(this->m_splash);
 
-	this->m_SFX->End(m_helper);
-	delete(m_SFX);
+	this->m_SFX->End(this->m_helper);
+	delete(this->m_SFX);
 }
 
 // * Start - We initialize the variables
 void SplashScreen::Start(SDL_Helper * helper)
 {
 	this->m_helper = helper;
-	this->m_helper->SDL_LoadImage(&this->m_splash, IMG_SPLASHSCREEN);
-
+	this->m_splash = new Sprite(0, 0, helper, IMG_SPLASHSCREEN, 1, 1, SWITCH_SCREEN_WIDTH, SWITCH_SCREEN_HEIGHT, 0, 0, false, false, 1, true);
 	this->m_SFX = new SfxSound(this->m_helper, SND_SFX_SPLASH, false, 2);
 }
 
 // * Draw the images every frame
 void SplashScreen::Draw()
 {
-	this->m_helper->SDL_DrawImageOpacity(this->m_splash, 0, 0, this->m_splashOpacity);
+	this->m_splash->Draw(this->m_helper);
 }
 
 // * Update game stuff (SplashScreen opacity)
@@ -74,7 +72,9 @@ void SplashScreen::Update()
 			if (!this->m_sfxSplash)
 			{
 				this->m_sfxSplash = true;
-				this->m_SFX->Play(m_helper);
+
+				if (!this->m_settings->m_muted)
+					this->m_SFX->Play(m_helper);
 			}
 		}
 
@@ -99,6 +99,8 @@ void SplashScreen::Update()
 		}
 		break;
 	}
+
+	this->m_splash->SetOpacity(this->m_splashOpacity);
 
 	if (this->m_changeScene)
 	{

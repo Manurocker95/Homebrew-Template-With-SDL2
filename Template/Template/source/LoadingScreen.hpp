@@ -1,6 +1,4 @@
-/* This file is part of Manurocker95's Template!
-
-this is made for my tutorial: https://gbatemp.net/threads/tutorial-setting-up-visual-studio-2017-environment-for-nintendo-switch-homebrew-development.525977/#post-8439059
+/* This file is part of T-Rekt NX!
 
 Copyright (C) 2018/2019 Manuel Rodríguez Matesanz
 >    This program is free software: you can redistribute it and/or modify
@@ -36,7 +34,6 @@ private:
 
 	SceneManager::SCENES m_nextScene;
 
-
 private:
 	unsigned int m_lastTime;
 	unsigned int m_currentTime;
@@ -44,12 +41,12 @@ private:
 	int m_delay;
 public:
 
-	LoadingScreen(SceneManager::SCENES  _nextScene);			// Constructor
-	~LoadingScreen();											// Destructor
-	void Start(SDL_Helper * helper) override;					// initialize
-	void Draw() override;										// Draw
-	void CheckInputs(u64 kDown, u64 kHeld, u64 kUp) override;	// CheckInput
-	void Update() override;										// Update
+	LoadingScreen(SceneManager::SCENES  _nextScene, Settings * settings, int _delayTime);						// Constructor
+	~LoadingScreen();																							// Destructor
+	void Start(SDL_Helper * helper) override;																	// initialize
+	void Draw() override;																						// Draw
+	void CheckInputs(u64 kDown, u64 kHeld, u64 kUp) override;													// CheckInput
+	void Update() override;																						// Update
 	void NextScene() override;
 };
 

@@ -1,6 +1,4 @@
-/* This file is part of Manurocker95's Template!
-
-this is made for my tutorial: https://gbatemp.net/threads/tutorial-setting-up-visual-studio-2017-environment-for-nintendo-switch-homebrew-development.525977/#post-8439059
+/* This file is part of T-Rekt NX!
 
 Copyright (C) 2018/2019 Manuel Rodríguez Matesanz
 >    This program is free software: you can redistribute it and/or modify
@@ -33,7 +31,7 @@ private:
 	SDL_Texture * m_pressedSprite;
 
 public:
-	Button(int _x, int _y, SDL_Helper * _helper, char * _sprite, char * _notInteractableTexture, char * _pressedTexture, bool _interactable, bool _animated, int _numFrames, int _sizePerFrameX, int _sizePerFrameY, int _multipleFrames, int _currentFrameX, int _currentFrameY);
+	Button(int _x, int _y, SDL_Helper * _helper, char * _sprite, char * _notInteractableTexture, char * _pressedTexture, bool _interactable, bool _animated, int _numFramesX, int _numFramesY,int _sizePerFrameX, int _sizePerFrameY, int _multipleFrames, int _currentFrameX, int _currentFrameY);
 	
 	// Sprite methods
 	void Draw(SDL_Helper * _helper) override;

@@ -25,7 +25,7 @@ Copyright (C) 2018/2019 Manuel Rodríguez Matesanz
 #include <switch.h>
 #include "SDL_Helper.hpp"
 #include "Colors.h"
-#include "Settings.h"
+#include "Settings.hpp"
 #include "SceneManager.hpp"
 #include <sys\stat.h>
 #include "Filepaths.h"
@@ -44,23 +44,29 @@ int main(int argc, char* argv[])
 	
 	SceneManager::Instance()->Start(helper);
 
-	// Main loop
-	while (appletMainLoop())
+	if (!SceneManager::Instance()->IsOut())
 	{
-		helper->SDL_ClearScreen(BLACK);
-		helper->SDL_DrawRect(0, 0, SWITCH_SCREEN_WIDTH, SWITCH_SCREEN_HEIGHT, WHITE);
-		
-		SceneManager::Instance()->Update();
+		// Main loop
+		while (appletMainLoop())
+		{
+			helper->SDL_ClearScreen(C_BLACK);
+			helper->SDL_DrawRect(0, 0, SWITCH_SCREEN_WIDTH, SWITCH_SCREEN_HEIGHT, C_WHITE);
 
-		if (SceneManager::Instance()->IsOut())
-			break; // break in order to return to hbmenu
+			SceneManager::Instance()->Update();
 
-		helper->SDL_Renderdisplay();
+			if (SceneManager::Instance()->IsOut())
+				break; // break in order to return to hbmenu
+
+			helper->SDL_Renderdisplay();
+		}
 	}
+
 
 	plExit();
 	romfsExit();
 	SceneManager::Instance()->Exit();
+	delete(SceneManager::Instance());
+
 	helper->SDL_Exit();
 	delete(helper);
 

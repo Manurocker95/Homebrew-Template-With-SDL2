@@ -26,12 +26,17 @@ Copyright (C) 2018/2019 Manuel Rodríguez Matesanz
 #include "MusicSound.hpp"
 #include "Button.hpp"
 #include "Text.hpp"
+#include "Toggle.hpp"
 
 class TitleScreen : public Scene
 {
 private:
-	SDL_Texture * m_background;
-	SDL_Texture * m_logo;
+
+	Sprite * m_background;
+	Sprite * m_logo;
+
+	// Toggles
+	Toggle * m_soundToggle;
 
 	// Text
 	Text * m_creatorText;
@@ -45,7 +50,7 @@ private:
 
 public:
 
-	TitleScreen();														// Constructor
+	TitleScreen(Settings * _settings);														// Constructor
 	~TitleScreen();														// Destructor
 	void Start(SDL_Helper * helper) override;							// initialize
 	void Draw() override;												// Draw

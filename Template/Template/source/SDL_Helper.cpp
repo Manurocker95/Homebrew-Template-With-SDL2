@@ -20,7 +20,7 @@ Copyright (C) 2018/2019 Manuel Rodríguez Matesanz
 
 #include "SDL_Helper.hpp"
 #include <iostream>
-#include "Settings.h"
+#include "Settings.hpp"
 #include "Colors.h"
 
 SDL_Helper::SDL_Helper()
@@ -62,7 +62,7 @@ Result SDL_Helper::SDL_HelperInit(void)
 	Result ret = 0;
 
 	SDL_Init(SDL_INIT_EVERYTHING);
-	this->m_window = SDL_CreateWindow(PROJECT_NAME, 0, 0, SWITCH_SCREEN_WIDTH, SWITCH_SCREEN_HEIGHT, SDL_WINDOW_FULLSCREEN);
+	this->m_window = SDL_CreateWindow("Template", 0, 0, SWITCH_SCREEN_WIDTH, SWITCH_SCREEN_HEIGHT, SDL_WINDOW_FULLSCREEN);
 	this->m_renderer = SDL_CreateRenderer(this->m_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	SDL_SetRenderDrawBlendMode(this->m_renderer, SDL_BLENDMODE_BLEND);
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "2");

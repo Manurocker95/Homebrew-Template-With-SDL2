@@ -23,6 +23,7 @@ Copyright (C) 2018/2019 Manuel Rodríguez Matesanz
 #define _CIRCLE_HPP_
 
 #include "Sprite.hpp"
+#include "Settings.hpp"
 
 class Circle : public Sprite
 {
@@ -43,13 +44,10 @@ private:
 
 public:
 
-	Circle(CIRCLE_TYPE _type, int _x, int _y, SDL_Helper * _helper, char * _sprite, int _sizePerFrameX, int _sizePerFrameY);
+	Circle(CIRCLE_TYPE _type, int _x, int _y, SDL_Helper * _helper, char * _sprite, int _sizePerFrameX, int _sizePerFrameY, Settings * _settings);
 	~Circle();
 
 	void Update() override;
-	void OnDrag(touchPosition * _pos);
-	void UpdateDrag(touchPosition * _pos);
-	void OnDrop();
 	bool GetFalling();
 	void SetFalling(bool _value);
 	void SetSpeed(float _value);

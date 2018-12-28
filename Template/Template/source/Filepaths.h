@@ -23,9 +23,13 @@ Copyright (C) 2018/2019 Manuel Rodríguez Matesanz
 #ifndef _FILEPATHS_HPP_
 #define _FILEPATHS_HPP_
 
-// save data
+/* Save data */
 #define DATA_FOLDER "sdmc:/switch/Manurocker95/Template/"
 #define DATA_FILE "sdmc:/switch/Manurocker95/Template/data.sav"
+
+/* Localization */
+#define LOCALIZATION_TEXT_FOLDER  "romfs:/Assets/Files/"
+#define LOCALIZATION_TEXT_FILE "romfs:/Assets/Files/english.localization"
 
 /* Sounds */
 #define SND_BGM_GAME  "romfs:/Assets/Audio/Music/game.mp3"
@@ -43,11 +47,16 @@ Copyright (C) 2018/2019 Manuel Rodríguez Matesanz
 #define IMG_RED_CIRCLE "romfs:/Assets/Graphics/RedCircle.png"
 #define IMG_BLUE_CIRCLE "romfs:/Assets/Graphics/BlueCircle.png"
 
+#define IMG_TOGGLE_SOUND "romfs:/Assets/Graphics/sound.png"
+#define IMG_TOGGLE_NO_SOUND "romfs:/Assets/Graphics/nosound.png"
+
 //Splash Screen
 #define IMG_SPLASHSCREEN "romfs:/Assets/Graphics/Splash.png"
 
 // Loading Screen
 #define IMG_BG_LOADING "romfs:/Assets/Graphics/Loading.png" 
+// Intro - same cinematic as TREKT
+#define IMG_CINEMATIC_INTRO "romfs:/Assets/Graphics/intro.png" 
 
 // Bytton
 #define IMG_BTN_PLAY "romfs:/Assets/Graphics/playBtn.png" 

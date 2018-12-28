@@ -23,12 +23,9 @@ Copyright (C) 2018/2019 Manuel Rodríguez Matesanz
 #include "TitleScreen.hpp"
 #include "GameScreen.hpp"
 #include "LoadingScreen.hpp"
-
+#include "IntroScreen.hpp"
 #include "Colors.h"
 #include "Filepaths.h"
-
-#include <fstream>
-#include <sstream>
 
 SceneManager * SceneManager::instance = NULL;
 
@@ -43,29 +40,19 @@ SceneManager * SceneManager::Instance()
 // Scene Manager Data initialization
 void SceneManager::Start(SDL_Helper * helper)
 {
+	this->m_saveManager = new SaveManager();
+	this->m_LocalizationManager = new LocalizationManager();
 	this->m_helper = helper;
-	this->m_out = false;
-	this->m_timesRunThisHB = 0;
+	this->m_out = (this->m_LocalizationManager->Initialized()) ? false : true;
 	ReadData();
 }
 
 // We read the data from our .sav
 void SceneManager::ReadData()
 {
-	std::ifstream myReadFile(DATA_FILE);
-
-	if (myReadFile)
-	{
-		myReadFile >> m_timesRunThisHB;
-		m_actualScene = new SplashScreen();
-	}
-	else
-	{
-		SaveData();
-	}
-
-	this->m_actualScene = new SplashScreen();
-	this->m_actualScene->Start(m_helper);
+	this->m_settings = this->m_saveManager->GetSettings();
+	this->m_actualScene = new SplashScreen(this->m_settings);
+	this->m_actualScene->Start(this->m_helper);
 }
 
 // We set the new scene
@@ -78,26 +65,32 @@ void SceneManager::SetActualScene(SCENES _scene)
 	switch (_scene)
 	{
 	case SPLASH:
-		this->m_actualScene = new SplashScreen();
+		this->m_actualScene = new SplashScreen(this->m_settings);
+		break;
+	case INTRO:
+		this->m_actualScene = new IntroScreen(this->m_settings);
 		break;
 	case TITLE:
-		this->m_actualScene = new TitleScreen();
+		this->m_actualScene = new TitleScreen(this->m_settings);
 		break;
 	case GAME:
-		m_actualScene = new GameScreen();
+		m_actualScene = new GameScreen(this->m_settings);
 		break;
 	}
 
 	this->m_actualScene->Start(m_helper);
 }
 
-void SceneManager::LoadScene(SCENES _scene)
+void SceneManager::LoadScene(SCENES _scene, int _delayTime)
 {
+	if (_delayTime == -1)
+		_delayTime = this->m_settings->m_loadingDelay;
+
 	// We delete the pointer of the actual scene
 	if (this->m_actualScene != NULL)
 		delete (this->m_actualScene);
 
-	this->m_actualScene = new LoadingScreen(_scene);
+	this->m_actualScene = new LoadingScreen(_scene, this->m_settings, _delayTime);
 	this->m_actualScene->Start(m_helper);
 }
 
@@ -116,9 +109,9 @@ bool SceneManager::IsOut()
 }
 
 // Simple exiting
-void SceneManager::ExitGame()
+void SceneManager::ExitGame(int _score)
 {
-	SaveData();
+	SaveData(_score);
 	this->m_out = true;
 }
 
@@ -144,7 +137,10 @@ void SceneManager::CheckInputs()
 
 void SceneManager::Exit()
 {
-	delete(this);
+	delete(this->m_actualScene);
+	delete(this->m_LocalizationManager);
+	delete(this->m_saveManager);
+	//delete(instance);
 }
 
 SDL_Helper * SceneManager::GetHelper()
@@ -152,9 +148,12 @@ SDL_Helper * SceneManager::GetHelper()
 	return this->m_helper;
 }
 
-void SceneManager::SaveData()
+void SceneManager::SaveData(int _value)
 {
-	std::ofstream outfile(DATA_FILE);
-	outfile << m_timesRunThisHB;
-	outfile.close();
+	this->m_saveManager->Save(_value);
+}
+
+const char * SceneManager::GetText(char * _key)
+{
+	return this->m_LocalizationManager->GetText(_key);
 }

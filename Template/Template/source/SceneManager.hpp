@@ -19,14 +19,13 @@ Copyright (C) 2018/2019 Manuel Rodríguez Matesanz
 */
 
 #pragma once
-#ifndef _SCENE_MANAGER_H_
-#define _SCENE_MANAGER_H_
+#ifndef _SCENE_MANAGER_HPP_
+#define _SCENE_MANAGER_HPP_
 
 #include <string>
-#include <fstream>
-#include <sstream>
 #include "Scene.hpp"
-
+#include "SaveManager.hpp"
+#include "LocalizationManager.hpp"
 
 class SceneManager
 {
@@ -35,6 +34,7 @@ public:
 	enum SCENES 
 	{ 
 		SPLASH, 
+		INTRO,
 		TITLE,
 		GAME, 
 		LOADING
@@ -44,24 +44,25 @@ private:
 	static SceneManager * instance;			// Singleton Instance
 	Scene * m_actualScene;					// Scene running
 	SDL_Helper * m_helper;					// SDL Helper instance
-
-	int m_timesRunThisHB;					// How many times did we run this homebrew
+	SaveManager * m_saveManager;
+	LocalizationManager * m_LocalizationManager;
+	Settings * m_settings;
 	bool m_out;								// if we ended or not the program
 
 public:
 	static SceneManager * Instance();		// Property to get the singleton instance
-	void LoadScene(SCENES _scene);
+	void LoadScene(SCENES _scene, int _delayTime = -1);
 	void SetActualScene(SCENES _scene);		// Method to set a new scene (E.G: SplashScreen -> GameScreen)
 	void Start(SDL_Helper * helper);		// Method for initialization
 	void Update();							// Method called every frame. It calls to scene Draw, Update and CheckInput functions
 	void Draw();							// Method called every frame. It calls to scene Draw, Update and CheckInput functions
 	void CheckInputs();						// Method called every frame. It calls to scene Draw, Update and CheckInput functions
 	bool IsOut();							// Method that returns if we are exiting the game from scene (normal exiting)
-	void ExitGame();						// Method to exit the game (Out = true)
+	void ExitGame(int _score = -1);			// Method to exit the game (Out = true)
 	void ReadData();						// Method for reading data from our save
-	void SaveData();
+	void SaveData(int _val);
 	void Exit();
-	
+	const char * GetText(char * _key);
 	SDL_Helper * GetHelper();
 
 private:

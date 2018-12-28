@@ -21,11 +21,12 @@ Copyright (C) 2018/2019 Manuel Rodríguez Matesanz
 #include "TitleScreen.hpp"
 #include "SceneManager.hpp"
 #include "Filepaths.h"
-#include "Settings.h"
+#include "Settings.hpp"
 #include "Colors.h"
 
-TitleScreen::TitleScreen() : Scene()
+TitleScreen::TitleScreen(Settings * _settings) : Scene(_settings)
 {
+	this->m_settings = _settings;
 	this->m_changeScene = false;
 }
 
@@ -40,8 +41,11 @@ TitleScreen::~TitleScreen()
 	this->m_playButton->End(this->m_helper);
 	delete(this-> m_playButton);
 
-	this->m_helper->SDL_DestroyTexture(m_background);
-	this->m_helper->SDL_DestroyTexture(m_logo);
+	this->m_background->End(this->m_helper);
+	delete(this->m_background);
+
+	this->m_logo->End(this->m_helper);
+	delete(this->m_logo);
 
 	this->m_creatorText->End(this->m_helper);
 	delete(this->m_creatorText);
@@ -49,30 +53,38 @@ TitleScreen::~TitleScreen()
 
 void TitleScreen::Start(SDL_Helper * helper)
 {
-
 	this->m_helper = helper;
-	this->m_helper->SDL_LoadImage(&this->m_background, IMG_BACKGROUND);
-	this->m_helper->SDL_LoadImage(&this->m_logo, IMG_LOGO);
+	this->m_background = new Sprite(0, 0, helper, IMG_BACKGROUND, 1, 1, SWITCH_SCREEN_WIDTH, SWITCH_SCREEN_HEIGHT, 0, 0, false, false, 1);
+	this->m_logo = new Sprite(490, 70, helper, IMG_LOGO, 1, 1, 95, 95, 0, 0, false, false, 1);
 
-	this->m_creatorText = new Text(helper, "Manurocker95 (C) 2018", 525, 670, 15, true, FONT_NORMAL, BLACK);
+	this->m_soundToggle = new Toggle(!this->m_muted, 870, 380, this->m_helper, IMG_TOGGLE_SOUND, IMG_TOGGLE_NO_SOUND, true, false, 1, 1, 185, 185, false, 0, 0);
 
-	this->m_playButton = new Button(520, 380, this->m_helper, IMG_BTN_PLAY, IMG_BTN_PLAY_NON_INTERACTABLE, IMG_BTN_PLAY_PRESSED, true, false, 1, 185, 185, false, 0, 0);
+	this->m_creatorText = new Text(helper, "Manurocker95 (C) 2018", 525, 670, 15, true, FONT_NORMAL, C_BLACK);
+
+	this->m_playButton = new Button(520, 380, helper, IMG_BTN_PLAY, IMG_BTN_PLAY_NON_INTERACTABLE, IMG_BTN_PLAY_PRESSED,true,false,1,1, 185, 185, false, 0, 0);
 
 	this->m_buttonTapSFX = new SfxSound(this->m_helper, SND_SFX_TAP, false, 2);
 	this->m_music = new MusicSound(this->m_helper, SND_BGM_TITLE, true, 1);
 	this->m_music->Play(this->m_helper);
-	
+
+	if (this->m_settings->m_muted)
+		this->m_helper->SDL_PauseMusic();
 }
 
 void TitleScreen::Draw()
 {
-	this->m_helper->SDL_DrawImage(this->m_background, 0, 0);
-	this->m_helper->SDL_DrawImage(this->m_logo, 490, 70);
+	// BG
+	this->m_background->Draw(this->m_helper);
+	this->m_logo->Draw(this->m_helper);
 
 	// Draw Button
-	this->m_playButton->Draw(m_helper);
+	this->m_playButton->Draw(this->m_helper);
 
-	this->m_creatorText->Draw(m_helper);
+	this->m_soundToggle->Draw(this->m_helper);
+
+	this->m_creatorText->Draw(this->m_helper);
+
+	
 }
 
 void TitleScreen::Update()
@@ -98,8 +110,23 @@ void TitleScreen::CheckInputs(u64 kDown, u64 kHeld, u64 kUp)
 	{
 		if (this->m_playButton->GetPressed())
 		{
-			this->m_buttonTapSFX->Play(this->m_helper);
+			if (!this->m_settings->m_muted)
+				this->m_buttonTapSFX->Play(this->m_helper);
+
 			this->m_changeScene = true;
+			return;
+		}
+
+		this->m_soundToggle->CheckIsPressed(&touch);
+
+		if (this->m_soundToggle->ValueChanged())
+		{
+			this->m_soundToggle->ResetChangeValue();
+			Mute();
+
+			if (!this->m_settings->m_muted)
+				this->m_buttonTapSFX->Play(this->m_helper);
+
 			return;
 		}
 	}
@@ -107,7 +134,10 @@ void TitleScreen::CheckInputs(u64 kDown, u64 kHeld, u64 kUp)
 	if (kDown & KEY_A)
 	{
 		this->m_changeScene = true;
-		this->m_buttonTapSFX->Play(this->m_helper);
+
+		if (!this->m_settings->m_muted)
+			this->m_buttonTapSFX->Play(this->m_helper);
+
 		return;
 	}
 	
@@ -120,6 +150,6 @@ void TitleScreen::CheckInputs(u64 kDown, u64 kHeld, u64 kUp)
 // * We go to the next scene = GameScreen
 void TitleScreen::NextScene()
 {
-	SceneManager::Instance()->LoadScene(SceneManager::GAME);
+	SceneManager::Instance()->LoadScene(SceneManager::INTRO);
 }
 

@@ -18,49 +18,17 @@ Copyright (C) 2018/2019 Manuel Rodríguez Matesanz
 >    See LICENSE for information.
 */
 #include "Circle.hpp"
-#include "Settings.h"
 
-Circle::Circle(CIRCLE_TYPE _type, int _x, int _y, SDL_Helper * _helper, char * _sprite, int _sizePerFrameX, int _sizePerFrameY) : Sprite (_x, _y, _helper, _sprite, 1, _sizePerFrameX, _sizePerFrameY, 0, 0, false, false)
+Circle::Circle(CIRCLE_TYPE _type, int _x, int _y, SDL_Helper * _helper, char * _sprite, int _sizePerFrameX, int _sizePerFrameY, Settings * _settings) : Sprite (_x, _y, _helper, _sprite, 1, 1, _sizePerFrameX, _sizePerFrameY, 0, 0, false, false, 1, false, true, 0, 0)
 {
 	this->m_type = _type;
-	this->m_dragging = false;
 	this->m_falling = false;
-	this->m_speed = CIRCLE_DISPLACEMENT;
+	this->m_speed = _settings->m_circleDisplacement;
 }
-
 
 Circle::~Circle()
 {
 
-}
-
-void Circle::UpdateDrag(touchPosition * _pos)
-{
-	if (!this->m_active)
-	{
-		return;
-	}
-	this->m_x = _pos->px - (m_sizePerFrameX / 2);
-	this->m_y = _pos->py - (m_sizePerFrameY / 2);
-}
-
-void Circle::OnDrag(touchPosition  *_pos)
-{
-	if (!this->m_active)
-	{
-		return;
-	}
-	this->m_x = _pos->px - (m_sizePerFrameX / 2);
-	this->m_y = _pos->py - (m_sizePerFrameX / 2);
-}
-
-void  Circle::OnDrop()
-{
-	if (!this->m_active)
-	{
-		return;
-	}
-	this->m_dragging = false;
 }
 
 void Circle::Update()

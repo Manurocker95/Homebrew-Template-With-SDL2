@@ -29,17 +29,26 @@ protected:
 	SDL_Texture * m_sprite;
 	int m_x;
 	int m_y;
-	int m_numFrames;
+	int m_ox;
+	int m_oy;
+	int m_numFramesX;
+	int m_numFramesY;
 	int m_sizePerFrameX;
 	int m_sizePerFrameY;
 	int m_currentFrameX;
 	int m_currentFrameY;
+	int m_opacity;
+	int m_deltaTimeReduction;
+	bool m_updateYFrame;
 	bool m_multipleFrames;
 	bool m_active;
 	bool m_animated;
-
+	bool m_drawOpacity;
+	bool m_inLoop;
+	bool m_draggable;
+	bool m_dragging;
 public:
-	Sprite(int _x, int _y, SDL_Helper * _helper, char * _sprite, int m_numFrames, int _sizePerFrameX, int _sizePerFrameY, int _currentFrameX, int _currentFrameY, bool _multipleFrames, bool _animated);
+	Sprite(int _x, int _y, SDL_Helper * _helper, char * _sprite, int _numFramesX, int _numFramesY, int _sizePerFrameX, int _sizePerFrameY, int _currentFrameX, int _currentFrameY, bool _multipleFrames, bool _animated, int _deltaTimeReduction = 1, bool _opacityMode = false, bool _draggable = false, int _ox = 0, int _oy = 0);
 	~Sprite() {};
 	virtual void MoveX(int _value);
 	virtual void MoveY(int _value);
@@ -49,6 +58,10 @@ public:
 	virtual void SetX(int _value);
 	virtual int GetY();
 	virtual void SetY(int _value);
+	virtual int GetOX();
+	virtual void SetOX(int _value);
+	virtual int GetOY();
+	virtual void SetOY(int _value);
 
 	virtual SDL_Texture * GetSprite();
 	virtual void SetSprite(SDL_Texture * _sprite);
@@ -58,12 +71,24 @@ public:
 	virtual void End(SDL_Helper * _helper);
 
 	virtual void SetNumFrames(int _value);
-	virtual int GetNumFrames();
+	virtual int GetNumFramesX();
+	virtual int GetNumFramesY();
 	virtual void SetFrameSize(int _value, bool _xAxis);
 	virtual int GetFrameSize(bool _xAxis);
 
 	virtual bool Touched(touchPosition * _touch);
 	virtual bool IsActive();
 	virtual void SetActive(bool _value);
+	virtual bool IsLoop();
+	virtual void SetInLoop(bool _value);
+	virtual bool IsAnimated();
+	virtual void SetOpacity(int _value);
+	virtual void SetOpacityMode(bool _value);
+
+	virtual bool CheckOverlap(Sprite * _other);
+
+	virtual void OnDrag(touchPosition * _pos);
+	virtual void UpdateDrag(touchPosition * _pos);
+	virtual void OnDrop();
 };
 #endif

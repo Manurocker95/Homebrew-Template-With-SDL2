@@ -19,27 +19,31 @@ Copyright (C) 2018/2019 Manuel Rodríguez Matesanz
 */
 
 #pragma once
-#ifndef _SETTINGS_HPP_
-#define _SETTINGS_HPP_
+#ifndef _SAVE_MANAGER_HPP_
+#define _SAVE_MANAGER_HPP_
 
-#define PROJECT_NAME "Whats In The Box"
+#include <string>
+#include <fstream>
+#include <sstream>
+#include <nlohmann\json.hpp>
+#include "SaveData.hpp"
 
-// Screen size: 1280x720
-#define SWITCH_SCREEN_WIDTH 1280
-#define SWITCH_SCREEN_HEIGHT 720
+#pragma once
+class SaveManager
+{
+private:
+	
+	nlohmann::json m_json;
+	SaveData * m_data;
 
-// Version of our Homebrew and if we want to set a debugmode for us. 
-// We can disable it from here.
-#define VERSION "1.0"
-#define DEBUG_MODE false
+public:
+	SaveManager();
+	~SaveManager();
 
-// Time wait in loading screen in seconds
-#define LOADING_DELAY 2 
+	Settings * GetSettings();
 
-#define DELTA_TIME_REDUCTION 2 // HALF TIME -> SDL_TICKS/(100*reduction)
+	void ParseData();
+	void Save(int _score);
 
-#define MIN_POS_RED 40
-#define MIN_POS_BLUE 1150
-
-#define CIRCLE_DISPLACEMENT 10
+};
 #endif

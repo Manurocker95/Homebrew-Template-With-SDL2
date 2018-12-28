@@ -21,13 +21,14 @@ Copyright (C) 2018/2019 Manuel Rodríguez Matesanz
 #include "GameScreen.hpp"
 #include "SceneManager.hpp"
 #include "Filepaths.h"
-#include "Settings.h"
 #include "Colors.h"
 
-GameScreen::GameScreen() : Scene()
+GameScreen::GameScreen(Settings * _settings) : Scene(_settings)
 {
+	this->m_settings = _settings;
 	this->m_changeScene = false;
 	this->m_dragging = false;
+	this->m_circleDisplacement = _settings->m_circleDisplacement;
 }
 
 GameScreen::~GameScreen()
@@ -41,7 +42,8 @@ GameScreen::~GameScreen()
 	this->m_circle->End(this->m_helper);
 	delete(this->m_circle);
 
-	this->m_helper->SDL_DestroyTexture(m_background);
+	this->m_background->End(this->m_helper);
+	delete(this->m_background);
 
 	this->m_text->End(this->m_helper);
 	delete(this->m_text);
@@ -51,22 +53,24 @@ void GameScreen::Start(SDL_Helper * helper)
 {
 
 	this->m_helper = helper;
-	this->m_helper->SDL_LoadImage(&this->m_background, IMG_BACKGROUND);
+	this->m_background = new Sprite(0, 0, helper, IMG_BACKGROUND, 1, 1, SWITCH_SCREEN_WIDTH, SWITCH_SCREEN_HEIGHT, 0, 0, false, false, 1);
 
-	this->m_text = new Text(helper, "Game screen!", 525, 670, 15, true, FONT_NORMAL, BLACK);
+	this->m_text = new Text(helper, "Game screen!", 525, 670, 15, true, FONT_NORMAL, C_BLACK);
 
-	this->m_circle = new Circle(Circle::CIRCLE_TYPE::BLUE, 200, 200, this->m_helper, IMG_BLUE_CIRCLE, 94, 94);
+	this->m_circle = new Circle(Circle::CIRCLE_TYPE::BLUE, 200, 200, this->m_helper, IMG_BLUE_CIRCLE, 94, 94, this->m_settings);
 	
 	this->m_buttonTapSFX = new SfxSound(this->m_helper, SND_SFX_TAP, false, 2);
 	this->m_music = new MusicSound(this->m_helper, SND_BGM_TITLE, true, 1);
 	this->m_music->Play(this->m_helper);
 
+	if (this->m_settings->m_muted)
+		this->m_helper->SDL_PauseMusic();
+
 }
 
 void GameScreen::Draw()
 {
-	this->m_helper->SDL_DrawImage(this->m_background, 0, 0);
-
+	this->m_background->Draw(this->m_helper);
 
 	this->m_circle->Draw(this->m_helper);
 
@@ -118,16 +122,16 @@ void GameScreen::CheckInputs(u64 kDown, u64 kHeld, u64 kUp)
 	if (!this->m_dragging)
 	{
 		if (kHeld & KEY_RIGHT)
-			this->m_circle->MoveX(CIRCLE_DISPLACEMENT);
+			this->m_circle->MoveX(this->m_circleDisplacement);
 
 		if (kHeld & KEY_LEFT)
-			this->m_circle->MoveX(-CIRCLE_DISPLACEMENT);
+			this->m_circle->MoveX(-this->m_circleDisplacement);
 
 		if (kHeld & KEY_UP)
-			this->m_circle->MoveY(-CIRCLE_DISPLACEMENT);
+			this->m_circle->MoveY(-this->m_circleDisplacement);
 
 		if (kHeld & KEY_DOWN)
-			this->m_circle->MoveY(CIRCLE_DISPLACEMENT);
+			this->m_circle->MoveY(this->m_circleDisplacement);
 
 		if (kDown & KEY_R)
 			this->m_circle->SetFalling(true);
