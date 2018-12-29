@@ -28,12 +28,12 @@ SDL_Helper::SDL_Helper()
 
 }
 
-SDL_Renderer * SDL_Helper::SDL_GetMainRenderer(void) 
+SDL_Renderer * SDL_Helper::SDL_GetMainRenderer(void)
 {
 	return this->m_renderer;
 }
 
-SDL_Window * SDL_Helper::SDL_GetMainWindow(void) 
+SDL_Window * SDL_Helper::SDL_GetMainWindow(void)
 {
 	return this->m_window;
 }
@@ -43,7 +43,7 @@ bool SDL_Helper::SDL_IsInitialized(void)
 	return this->m_initialized;
 }
 
-FC_Font * SDL_Helper::GetFont(int size) 
+FC_Font * SDL_Helper::GetFont(int size)
 {
 	if (size <= 20)
 		return this->Roboto_small;
@@ -57,7 +57,7 @@ FC_Font * SDL_Helper::GetFont(int size)
 	return this->Roboto;
 }
 
-Result SDL_Helper::SDL_HelperInit(void) 
+Result SDL_Helper::SDL_HelperInit(void)
 {
 	Result ret = 0;
 
@@ -92,9 +92,9 @@ Result SDL_Helper::SDL_HelperInit(void)
 
 	this->Roboto_OSK = FC_CreateFont();
 	FC_LoadFont_RW(this->Roboto_OSK, this->m_renderer, SDL_RWFromMem((void*)this->fontData.address, this->fontData.size), SDL_RWFromMem((void*)this->fontExtData.address, this->fontExtData.size), 1, 50, FC_MakeColor(0, 0, 0, 255), TTF_STYLE_NORMAL);
-	
+
 	this->m_initialized = true;
-	
+
 	return 0;
 }
 
@@ -116,7 +116,7 @@ void SDL_Helper::SDL_DestroyFont(FC_Font * font)
 	FC_FreeFont(font);
 }
 
-void SDL_Helper::SDL_Exit(void) 
+void SDL_Helper::SDL_Exit(void)
 {
 	FC_FreeFont(this->Roboto_OSK);
 	FC_FreeFont(this->Roboto_small);
@@ -134,13 +134,13 @@ void SDL_Helper::SDL_Exit(void)
 }
 
 
-void SDL_Helper::SDL_ClearScreen(SDL_Color colour) 
+void SDL_Helper::SDL_ClearScreen(SDL_Color colour)
 {
 	SDL_SetRenderDrawColor(this->m_renderer, colour.r, colour.g, colour.b, colour.a);
 	SDL_RenderClear(this->m_renderer);
 }
 
-void SDL_Helper::SDL_DrawRect(int x, int y, int w, int h, SDL_Color colour) 
+void SDL_Helper::SDL_DrawRect(int x, int y, int w, int h, SDL_Color colour)
 {
 	SDL_Rect rect;
 	rect.x = x; rect.y = y; rect.w = w; rect.h = h;
@@ -148,18 +148,18 @@ void SDL_Helper::SDL_DrawRect(int x, int y, int w, int h, SDL_Color colour)
 	SDL_RenderFillRect(this->m_renderer, &rect);
 }
 
-void SDL_Helper::SDL_DrawCircle(int x, int y, int r, SDL_Color colour) 
+void SDL_Helper::SDL_DrawCircle(int x, int y, int r, SDL_Color colour)
 {
 	filledCircleRGBA(this->m_renderer, x, y, r, colour.r, colour.g, colour.b, colour.a);
 	return;
 }
 
-void SDL_Helper::SDL_DrawText(int x, int y, int size, SDL_Color colour, const char *text) 
+void SDL_Helper::SDL_DrawText(int x, int y, int size, SDL_Color colour, const char *text)
 {
 	FC_DrawColor(GetFont(size), this->m_renderer, x, y, colour, text);
 }
 
-void SDL_Helper::SDL_DrawTextf(int x, int y, int size, SDL_Color colour, const char* text, ...) 
+void SDL_Helper::SDL_DrawTextf(int x, int y, int size, SDL_Color colour, const char* text, ...)
 {
 	char buffer[256];
 	va_list args;
@@ -170,7 +170,7 @@ void SDL_Helper::SDL_DrawTextf(int x, int y, int size, SDL_Color colour, const c
 }
 
 
-void SDL_Helper::SDL_GetTextDimensions(int size, const char *text, u32 *width, u32 *height) 
+void SDL_Helper::SDL_GetTextDimensions(int size, const char *text, u32 *width, u32 *height)
 {
 	FC_Font *font = GetFont(size);
 
@@ -181,7 +181,7 @@ void SDL_Helper::SDL_GetTextDimensions(int size, const char *text, u32 *width, u
 }
 
 
-void SDL_Helper::SDL_LoadImage(SDL_Texture **texture, char *path) 
+void SDL_Helper::SDL_LoadImage(SDL_Texture **texture, char *path)
 {
 	SDL_Surface *loaded_surface = NULL;
 	loaded_surface = IMG_Load(path);
@@ -195,7 +195,7 @@ void SDL_Helper::SDL_LoadImage(SDL_Texture **texture, char *path)
 	SDL_FreeSurface(loaded_surface);
 }
 
-void SDL_Helper::SDL_DrawImage(SDL_Texture *texture, int x, int y) 
+void SDL_Helper::SDL_DrawImage(SDL_Texture *texture, int x, int y)
 {
 	SDL_Rect position;
 	position.x = x; position.y = y;
@@ -203,11 +203,26 @@ void SDL_Helper::SDL_DrawImage(SDL_Texture *texture, int x, int y)
 	SDL_RenderCopy(this->m_renderer, texture, NULL, &position);
 }
 
+void SDL_Helper::SDL_DrawImageRotated(SDL_Texture *texture, int x, int y, double angle, SDL_Point center, SDL_RendererFlip flip)
+{
+	SDL_Rect position;
+	position.x = x; position.y = y;
+	SDL_QueryTexture(texture, NULL, NULL, &position.w, &position.h);
+	SDL_RenderCopyEx(this->m_renderer, texture, NULL, &position, angle, &center, flip);
+}
+
 void SDL_Helper::SDL_DrawImageRect(SDL_Texture * texture, int x, int y, int tex_x, int tex_y, int tex_w, int tex_h)
 {
-	SDL_Rect srcrect = { tex_x, tex_y, tex_w, tex_h};
+	SDL_Rect srcrect = { tex_x, tex_y, tex_w, tex_h };
 	SDL_Rect dstrect = { x, y, tex_w, tex_h };
 	SDL_RenderCopy(this->m_renderer, texture, &srcrect, &dstrect);
+}
+
+void SDL_Helper::SDL_DrawImageRotatedRect(SDL_Texture * texture, int x, int y, int tex_x, int tex_y, int tex_w, int tex_h, double angle, SDL_Point center, SDL_RendererFlip flip)
+{
+	SDL_Rect srcrect = { tex_x, tex_y, tex_w, tex_h };
+	SDL_Rect dstrect = { x, y, tex_w, tex_h };
+	SDL_RenderCopyEx(this->m_renderer, texture, &srcrect, &dstrect, angle, &center, flip);
 }
 
 void SDL_Helper::SDL_DrawImageRectOpacity(SDL_Texture * texture, int x, int y, int tex_x, int tex_y, int tex_w, int tex_h, int opacity)
@@ -216,14 +231,27 @@ void SDL_Helper::SDL_DrawImageRectOpacity(SDL_Texture * texture, int x, int y, i
 	SDL_DrawImageRect(texture, x, y, tex_x, tex_y, tex_w, tex_h);
 }
 
-void SDL_Helper::SDL_DrawImageScale(SDL_Texture *texture, int x, int y, int w, int h) 
+void SDL_Helper::SDL_DrawImageRotatedRectOpacity(SDL_Texture * texture, int x, int y, int tex_x, int tex_y, int tex_w, int tex_h, int opacity, double angle, SDL_Point center, SDL_RendererFlip flip)
+{
+	SDL_SetTextureAlphaMod(texture, opacity);
+	SDL_DrawImageRotatedRect(texture, x, y, tex_x, tex_y, tex_w, tex_h, angle, center, flip);
+}
+
+void SDL_Helper::SDL_DrawImageScale(SDL_Texture *texture, int x, int y, int w, int h)
 {
 	SDL_Rect position;
 	position.x = x; position.y = y; position.w = w; position.h = h;
 	SDL_RenderCopy(this->m_renderer, texture, NULL, &position);
 }
 
-void SDL_Helper::SDL_Renderdisplay(void) 
+void SDL_Helper::SDL_DrawImageRotatedScale(SDL_Texture *texture, int x, int y, int w, int h, double angle, SDL_Point center, SDL_RendererFlip flip)
+{
+	SDL_Rect position;
+	position.x = x; position.y = y; position.w = w; position.h = h;
+	SDL_RenderCopyEx(this->m_renderer, texture, NULL, &position, angle, &center, flip);
+}
+
+void SDL_Helper::SDL_Renderdisplay(void)
 {
 	SDL_RenderPresent(this->m_renderer);
 }
@@ -234,10 +262,22 @@ void SDL_Helper::SDL_DrawImageOpacity(SDL_Texture *texture, int x, int y, int op
 	SDL_DrawImage(texture, x, y);
 }
 
+void SDL_Helper::SDL_DrawImageRotatedOpacity(SDL_Texture *texture, int x, int y, int opacity, double angle, SDL_Point center, SDL_RendererFlip flip)
+{
+	SDL_SetTextureAlphaMod(texture, opacity);
+	SDL_DrawImageRotated(texture, x, y, angle, center, flip);
+}
+
 void SDL_Helper::SDL_DrawImageScaleOpacity(SDL_Texture *texture, int x, int y, int w, int h, int opacity)
 {
 	SDL_SetTextureAlphaMod(texture, opacity);
 	SDL_DrawImageScale(texture, x, y, w, h);
+}
+
+void SDL_Helper::SDL_DrawImageRotatedScaleOpacity(SDL_Texture *texture, int x, int y, int w, int h, int opacity, double angle, SDL_Point center, SDL_RendererFlip flip)
+{
+	SDL_SetTextureAlphaMod(texture, opacity);
+	SDL_DrawImageRotatedScale(texture, x, y, w, h, angle, center, flip);
 }
 
 void SDL_Helper::SDL_DestroyTexture(SDL_Texture * texture)
@@ -277,7 +317,7 @@ void SDL_Helper::SDL_LoadSound(Mix_Chunk ** sound, char * path)
 }
 
 void SDL_Helper::SDL_PlaySound(Mix_Chunk * sound, int channel, bool _loop)
-{ 
+{
 	int _times = _loop ? -1 : 0; // zero?
 	if (Mix_PlayChannel(channel, sound, _times) == -1)
 	{

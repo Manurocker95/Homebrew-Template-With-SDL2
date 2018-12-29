@@ -17,6 +17,7 @@ Copyright (C) 2018/2019 Manuel Rodríguez Matesanz
 >    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 >    See LICENSE for information.
 */
+
 #pragma once
 #ifndef _SPRITE_HPP_
 #define _SPRITE_HPP_
@@ -47,8 +48,9 @@ protected:
 	bool m_inLoop;
 	bool m_draggable;
 	bool m_dragging;
+	bool m_limitedInScreen;
 public:
-	Sprite(int _x, int _y, SDL_Helper * _helper, char * _sprite, int _numFramesX, int _numFramesY, int _sizePerFrameX, int _sizePerFrameY, int _currentFrameX, int _currentFrameY, bool _multipleFrames, bool _animated, int _deltaTimeReduction = 1, bool _opacityMode = false, bool _draggable = false, int _ox = 0, int _oy = 0);
+	Sprite(int _x, int _y, SDL_Helper * _helper, char * _sprite, int _numFramesX, int _numFramesY, int _sizePerFrameX, int _sizePerFrameY, int _currentFrameX, int _currentFrameY, bool _multipleFrames, bool _animated, int _deltaTimeReduction = 1, bool _opacityMode = false, bool _draggable = false, int _ox = 0, int _oy = 0, bool _limitedInScreen = false);
 	~Sprite() {};
 	virtual void MoveX(int _value);
 	virtual void MoveY(int _value);
@@ -84,7 +86,8 @@ public:
 	virtual bool IsAnimated();
 	virtual void SetOpacity(int _value);
 	virtual void SetOpacityMode(bool _value);
-
+	virtual bool IsLimited();
+	virtual void SetIsLimited(bool _value);
 	virtual bool CheckOverlap(Sprite * _other);
 
 	virtual void OnDrag(touchPosition * _pos);

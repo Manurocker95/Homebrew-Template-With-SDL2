@@ -68,7 +68,7 @@ void LocalizationManager::ParseTexts()
 	this->m_canParse = false;
 	m_currentLanguage = std::string((char*)&this->m_languageCode);
 
-	std::ifstream langFile((std::string(LOCALIZATION_TEXT_FOLDER)+m_currentLanguage+std::string(".localization")).c_str());
+	std::ifstream langFile((std::string(LOCALIZATION_TEXT_FOLDER)+m_currentLanguage+std::string(LOCALIZATION_TEXT_FILE_EXTENSION)).c_str());
 	if (langFile)
 	{
 		this->m_canParse = true;

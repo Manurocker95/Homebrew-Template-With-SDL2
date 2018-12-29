@@ -30,6 +30,7 @@ Copyright (C) 2018/2019 Manuel Rodríguez Matesanz
 /* Localization */
 #define LOCALIZATION_TEXT_FOLDER  "romfs:/Assets/Files/"
 #define LOCALIZATION_TEXT_FILE "romfs:/Assets/Files/english.localization"
+#define LOCALIZATION_TEXT_FILE_EXTENSION ".localization"
 
 /* Sounds */
 #define SND_BGM_GAME  "romfs:/Assets/Audio/Music/game.mp3"
